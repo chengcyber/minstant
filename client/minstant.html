@@ -112,7 +112,11 @@
   </div>
   <div class="media-body">
     <h4 class="media-heading">{{authorName}}</h4>
-    <p>{{text}}</p>
+    <p>
+        {{#emoji}}
+        {{text}}
+        {{/emoji}}
+    </p>
   </div>
 </div>  
 </template>

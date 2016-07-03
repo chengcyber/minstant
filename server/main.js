@@ -15,7 +15,7 @@ Meteor.startup(function () {
   } 
 });
 
-//all visible chats
+//chats that are related with login user
 Meteor.publish("chats", function () {
   // find a chat that has two users that match current user id
   var filter = {$or:[
@@ -30,4 +30,9 @@ Meteor.publish("chats", function () {
 //all visible users
 Meteor.publish("users", function() {
 	return Meteor.users.find();
+})
+
+//all avaiable emojis
+Meteor.publish("emojis", function() {
+  return Emojis.find();
 })
