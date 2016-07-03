@@ -19,24 +19,41 @@ Router.route('/chat/:_id', function () {
   // the user they want to chat to has id equal to 
   // the id sent in after /chat/... 
   var otherUserId = this.params._id;
-  // find a chat that has two users that match current user id
+  // Session.set("otherUserId", this.params._id);
   // and the requested user id
-  var filter = {$or:[
-              {user1Id:Meteor.userId(), user2Id:otherUserId}, 
-              {user2Id:Meteor.userId(), user1Id:otherUserId}
-              ]};
-  var chat = Chats.findOne(filter);
-  if (!chat){// no chat matching the filter - need to insert a new one
-    chatId = Chats.insert({user1Id:Meteor.userId(), user2Id:otherUserId});
-  }
-  else {// there is a chat going already - use that. 
-    chatId = chat._id;
-  }
-  if (chatId){// looking good, save the id to the session
-    Session.set("chatId",chatId);
-  }
+  // console.log(otherUserId);
+
+  // var filter = {$or:[
+  //   {user1Id:otherUserId},
+  //   {user2Id:otherUserId}
+  // ]}
+  // var chat = Chats.findOne(filter);
+  // console.log("chat");
+  // console.log(chat);
+
+  // if (!chat){// no chat matching the filter - need to insert a new one
+  //   chatId = Chats.insert({user1Id:Meteor.userId(), user2Id:otherUserId});
+  // }
+  // else {// there is a chat going already - use that.
+  //   chatId = chat._id;
+  // }
+  Meteor.call("getChatId", otherUserId, function(err, res) {
+    if (err) {
+      console.log(err);
+    } else {
+      chatId = res;
+      // console.log("chatId:");
+      // console.log(chatId);
+      if (chatId){// looking good, save the id to the session
+        Session.set("chatId",chatId);
+      }
+    }
+  });
+
   this.render("navbar", {to:"header"});
-  this.render("chat_page", {to:"main"});  
+  this.render("chat_page", {
+    to:"main"
+  });
 });
 
 
@@ -73,14 +90,14 @@ Template.navbar.helpers({
     return !!Meteor.user();
   },
   curUserAva: function(){
-    return Meteor.user().profile.avatar;
+    return Meteor.users.findOne({_id:Meteor.userId()}).profile.avatar;
   }
 })
 
 Template.chat_page.helpers({
 messages:function(){
   var chat = Chats.findOne({_id:Session.get("chatId")});
-  return chat.messages;
+  return chat?chat.messages:[];
 }
 })
 
@@ -109,16 +126,16 @@ Template.chat_page.events({
       if(!err) {
         // reset the form
         event.target.chat.value = "";
-        console.log("saveMsg");
+        console.log("saveMsg return:"+chatId);
       }
     });
   }
 })
 
-Template.available_user.events({
-  "click .js-set-otheruser" : function(event) {
-    // event.preventDefault();
-    console.log(this._id);
-    Session.set("otheruser", this._id);
-  }
-})
+// Template.available_user.events({
+//   "click .js-set-otheruser" : function(event) {
+//     // event.preventDefault();
+//     console.log(this._id);
+//     Session.set("otheruser", this._id);
+//   }
+// })

@@ -25,11 +25,10 @@
     </div>
     <div class="nav navbar-nav navbar-right">
     	{{#if isLogin}}
-    	<img class="sm-ava-img" src={{curUserAva}} alt="currentUserAvatar"/>
-		  {{/if}}
-		  {{> loginButtons}}
-		  
-		</div>
+            <img class="sm-ava-img" src="/{{curUserAva}}" alt="currentUserAvatar"/>
+        {{/if}}
+        {{> loginButtons}}
+    </div>
   </div>
 </nav>
 </template>
@@ -61,7 +60,7 @@
 				<img src="/{{profile.avatar}}" class="avatar_img">			
 			</div>
 			{{else}} -->
-			<a href="/chat/{{_id}}" class="js-set-otheruser">
+			<a href="/chat/{{_id}}">
 				{{getUsername _id}}
 				<br/>
 				<img src="/{{profile.avatar}}" class="avatar_img">
@@ -109,12 +108,10 @@
 <template name="chat_message">
 	<div class="media">
   <div class="media-left">
-    <a href="#">
-      <img class="media-object" src={{getUserAvaById author}} alt="avator">
-    </a>
+      <img class="media-object" src="/{{authorAva}}" alt="avator">
   </div>
   <div class="media-body">
-    <h4 class="media-heading">{{getUserName author}}</h4>
+    <h4 class="media-heading">{{authorName}}</h4>
     <p>{{text}}</p>
   </div>
 </div>  

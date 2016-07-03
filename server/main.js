@@ -16,9 +16,16 @@ Meteor.startup(function () {
 });
 
 //all visible chats
-Meteor.publish("chats", function() {
-	return Chats.find();
-})
+Meteor.publish("chats", function () {
+  // find a chat that has two users that match current user id
+  var filter = {$or:[
+    {user1Id:this.userId},
+    {user2Id:this.userId}
+  ]};
+  // console.log("filter:");
+  // console.log(filter);
+  return Chats.find(filter);
+});
 
 //all visible users
 Meteor.publish("users", function() {
